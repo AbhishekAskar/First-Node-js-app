@@ -3,26 +3,16 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
-// This line of code between const app and const server is called middleware ig
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.use('/add-product', (req, res, next) => {
-    res.send(`
-        <form action="/product" method="POST">
-            <input type="text" name="title" placeholder="Product Title"><br>
-            <input type="text" name="size" placeholder="Product Size"><br>
-            <button type="submit">Add Product</button>
-        </form>
-    `);
-});
-app.post('/product', (req, res, next) => {
-    console.log(req.body);
-    res.redirect('/');
-});
+app.use('/admin', adminRoutes); // This use method will handle all the types of request not only just get request but all
+app.use(shopRoutes);
 
-app.use('/',(req, res, next) => {
-    res.send("<h1>Hello from Express</h1>")
+app.use((req, res, next) =>{
+    res.status(404).send('<h1>Page not found</h1>');
 });
 
 app.listen(3000);
